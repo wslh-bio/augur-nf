@@ -9,6 +9,7 @@
 
 Channel
     .fromPath( "${params.reference}")
+    .ifEmpty { exit 1, "Cannot find reference sequence in: ${params.reference}" }
     .into { reference_alignment; reference_translate }
 
 Channel
@@ -18,27 +19,29 @@ Channel
 
 Channel
     .fromPath( "${params.colors}")
+    .ifEmpty { exit 1, "Cannot find colors file in: ${params.colors}" }
     .set { colors_export }
 
 Channel
     .fromPath( "${params.lat_long}")
+    .ifEmpty { exit 1, "Cannot find latitude and longitude file in: ${params.lat_long}" }
     .set { lat_long_export }
 
 Channel
     .fromPath( "${params.auspice_config}")
+    .ifEmpty { exit 1, "Cannot find Auspice config file in: ${params.auspice_config}" }
     .set { config_export }
 
 // Filter sequences if sequences to drop are included
-if (params.dropped) {
+if (params.filter) {
     Channel
         .fromPath( "${params.sequences}")
-        .ifEmpty { exit 1, "Cannot find sequences in: ${params.sequences}" }
+        .ifEmpty { exit 1, "Cannot find input sequences in: ${params.sequences}" }
         .set { sequences }
-        
     Channel
-        .fromPath( "${params.dropped}")
-        .ifEmpty { exit 1, "Cannot find reference sequence in: ${params.reference}" }
-        .set { dropped_strains }
+        .fromPath( "${params.filter}")
+        .ifEmpty { exit 1, "Cannot find filter file in: ${params.filter}" }
+        .set { sequences }
 
     process filter{
       publishDir "${params.outdir}/filter", mode:'copy'
@@ -58,7 +61,6 @@ if (params.dropped) {
         --metadata ${metadata} \
         --output filtered.fasta \
         --group-by country year month \
-        --sequences-per-group ${params.seq_per_group} \
         --min-date ${params.min_date}
       """
     }
@@ -67,7 +69,7 @@ if (params.dropped) {
 else {
     Channel
         .fromPath( "${params.sequences}")
-        .ifEmpty { exit 1, "Cannot find sequences in: ${params.sequences}" }
+        .ifEmpty { exit 1, "Cannot find input sequences in: ${params.sequences}" }
         .set { input_sequences }
 }
 
@@ -216,7 +218,7 @@ if (params.traits) {
       file(config) from config_export
     
       output:
-      file "zika.json"
+      file "auspice.json"
     
       shell:
       """
