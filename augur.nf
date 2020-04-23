@@ -15,22 +15,22 @@ Channel
 Channel
     .fromPath( "${params.metadata}")
     .ifEmpty { exit 1, "Cannot find metadata file in: ${params.metadata}" }
-    .into { filter_metadata; refine_tree_metadata; traits_metadata; metadata_export }
+    .into { filter_metadata; refine_tree_metadata; traits_metadata; metadata_export; metadata_export_traits }
 
 Channel
     .fromPath( "${params.colors}")
     .ifEmpty { exit 1, "Cannot find colors file in: ${params.colors}" }
-    .set { colors_export }
+    .into { colors_export; colors_export_traits }
 
 Channel
     .fromPath( "${params.lat_long}")
     .ifEmpty { exit 1, "Cannot find latitude and longitude file in: ${params.lat_long}" }
-    .set { lat_long_export }
+    .into { lat_long_export; lat_long_export_traits }
 
 Channel
-    .fromPath( "${params.auspice_config}")
+    .fromPath( "${params.config}")
     .ifEmpty { exit 1, "Cannot find Auspice config file in: ${params.auspice_config}" }
-    .set { config_export }
+    .into { config_export; config_export_traits }
 
 // Filter sequences if sequences to drop are included
 if (params.filter) {
@@ -119,8 +119,8 @@ process refine{
   file(metadata) from refine_tree_metadata
 
   output:
-  file "refined_tree.newick" into refined_tree_traits, refined_tree_ancestral, refined_tree_translate, refined_tree_export
-  file "branch_lengths.json" into branch_lengths_export
+  file "refined_tree.newick" into refined_tree_traits, refined_tree_ancestral, refined_tree_translate, refined_tree_export, refined_tree_export_traits
+  file "branch_lengths.json" into branch_lengths_export, branch_lengths_export_traits
 
   shell:
   """
@@ -145,7 +145,7 @@ process ancestral{
   file(tree) from refined_tree_ancestral
   file(msa) from ancestral_alignment
   output:
-  file "nt_muts.json" into ancestral_nt_translate, ancestral_nt_export
+  file "nt_muts.json" into ancestral_nt_translate, ancestral_nt_export, ancestral_nt_export_traits
 
   shell:
   """
@@ -166,7 +166,7 @@ process translate{
   file(ref) from reference_translate
 
   output:
-  file "aa_muts.json" into ancestral_aa_muts
+  file "aa_muts.json" into ancestral_aa_export, ancestral_aa_export_traits
 
   shell:
   """
@@ -189,7 +189,7 @@ process traits{
   file "traits.json" into traits_export
 
   when:
-  params.traits == true
+  params.traits == "TRUE"
 
   shell:
   """
@@ -202,70 +202,69 @@ process traits{
   """
 }
 
-if (params.traits) {
-    process export{
-      publishDir "${params.outdir}", mode:'copy'
-    
-      input:
-      file(tree) from refined_tree_export
-      file(metadata) from metadata_export
-      file(branch_lengths) from branch_lengths_export
-      file(nt_muts) from ancestral_nt_export
-      file(aa_muts) from ancestral_aa_muts
-      file(traits) from traits_export
-      file(colors) from colors_export
-      file(lat_long) from lat_long_export
-      file(config) from config_export
-    
-      output:
-      file "auspice.json"
-    
-      shell:
-      """
-      augur export v2 \
-        --tree ${tree} \
-        --metadata ${metadata} \
-        --node-data ${branch_lengths} \
-                    ${nt_muts} \
-                    ${nt_muts} \
-                    ${traits} \
-        --colors ${colors} \
-        --lat-longs ${lat_long} \
-        --auspice-config ${config} \
-        --output zika.json
-      """
-    }
+
+process export{
+  publishDir "${params.outdir}", mode:'copy'
+
+  input:
+  file(tree) from refined_tree_export
+  file(metadata) from metadata_export
+  file(branch_lengths) from branch_lengths_export
+  file(nt_muts) from ancestral_nt_export
+  file(aa_muts) from ancestral_aa_export
+  file(colors) from colors_export
+  file(lat_long) from lat_long_export
+  file(config) from config_export
+
+  output:
+  file "auspice.json"
+
+  shell:
+  """
+  augur export v2 \
+    --tree ${tree} \
+    --metadata ${metadata} \
+    --node-data ${branch_lengths} \
+                ${nt_muts} \
+                ${nt_muts} \
+    --colors ${colors} \
+    --lat-longs ${lat_long} \
+    --auspice-config ${config} \
+    --output auspice.json
+  """
 }
 
-else {
-    process export{
-      publishDir "${params.outdir}", mode:'copy'
-    
-      input:
-      file(tree) from refined_tree_export
-      file(metadata) from metadata_export
-      file(branch_lengths) from branch_lengths_export
-      file(nt_muts) from ancestral_nt_export
-      file(aa_muts) from ancestral_aa_muts
-      file(colors) from colors_export
-      file(lat_long) from lat_long_export
-      file(config) from config_export
-    
-      output:
-      file "auspice.json"
-    
-      shell:
-      """
-      augur export v2 \
-        --tree ${tree} \
-        --metadata ${metadata} \
-        --node-data ${branch_lengths} \
-                    ${nt_muts} \
-                    ${nt_muts} \
-        --colors ${colors} \
-        --lat-longs ${lat_long} \
-        --auspice-config ${config} \
-        --output auspice.json
-      """
-    }
+process export_with_traits{
+  publishDir "${params.outdir}", mode:'copy'
+
+  input:
+  file(tree) from refined_tree_export_traits
+  file(metadata) from metadata_export_traits
+  file(branch_lengths) from branch_lengths_export_traits
+  file(nt_muts) from ancestral_nt_export_traits
+  file(aa_muts) from ancestral_aa_export_traits
+  file(traits) from traits_export
+  file(colors) from colors_export_traits
+  file(lat_long) from lat_long_export_traits
+
+  output:
+  file "auspice.json"
+
+  when:
+  params.traits == "TRUE"
+
+  shell:
+  """
+  augur export v2 \
+    --tree ${tree} \
+    --metadata ${metadata} \
+    --node-data ${branch_lengths} \
+                ${nt_muts} \
+                ${nt_muts} \
+                ${traits} \
+    --colors ${colors} \
+    --lat-longs ${lat_long} \
+    --auspice-config ${config} \
+    --output auspice.json
+  """
 }
