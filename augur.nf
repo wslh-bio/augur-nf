@@ -178,32 +178,31 @@ process translate{
   """
 }
 
-process traits{
-  publishDir "${params.outdir}/traits", mode:'copy'
+if (params.traits) {
+    process traits {
+        publishDir "${params.outdir}/traits", mode:'copy'
 
-  input:
-  file(tree) from refined_tree_traits
-  file(metadata) from traits_metadata
+        input:
+        file(tree) from refined_tree_traits
+        file(metadata) from traits_metadata
 
-  output:
-  file "traits.json" into traits_export
-
-  when:
-  params.traits == "TRUE"
-
-  shell:
-  """
-  augur traits \
-    --tree ${tree} \
-    --metadata ${metadata} \
-    --output traits.json \
-    --columns region country \
-    --confidence
-  """
+        output:
+        file "traits.json" into traits_export
+        
+        shell:
+        """
+        augur traits \
+            --tree ${tree} \
+            --metadata ${metadata} \
+            --output traits.json \
+            --columns region country \
+            --confidence
+        """
+    }
 }
 
 
-process export{
+process export {
   publishDir "${params.outdir}", mode:'copy'
 
   input:
@@ -235,7 +234,7 @@ process export{
 }
 
 if (params.traits) {
-    process export_with_traits{
+    process export_with_traits {
         publishDir "${params.outdir}", mode:'copy'
 
         input:
