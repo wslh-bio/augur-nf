@@ -41,7 +41,7 @@ if (params.filter) {
     Channel
         .fromPath( "${params.filter}")
         .ifEmpty { exit 1, "Cannot find filter file in: ${params.filter}" }
-        .set { sequences }
+        .set { dropped_strains }
 
     process filter{
       publishDir "${params.outdir}/filter", mode:'copy'
