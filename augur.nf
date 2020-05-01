@@ -59,6 +59,7 @@ if (params.filter) {
       augur filter \
         --sequences ${fasta} \
         --metadata ${metadata} \
+        --exclude ${exclude} \
         --output filtered.fasta \
         --group-by country year month \
         --min-date ${params.min_date}
