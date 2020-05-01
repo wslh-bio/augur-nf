@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 //Description: Nextflow implementation of Nextstrain's Augur pipeline
-//Available:
+//Available: https://github.com/nextstrain/augur
 //Authors of this Nextflow: Abigail Shockey
 //Email: abigail.shockey@slh.wisc.edu
 
