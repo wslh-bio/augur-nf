@@ -63,7 +63,7 @@ if (params.filter) {
         --output filtered.fasta \
         --group-by country year month \
         --min-date ${params.min_date} \
-        --sequences-per-group 20
+        --sequences-per-group ${params.seq_per_group}
       """
     }
 }
