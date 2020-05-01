@@ -226,7 +226,7 @@ process export{
     --metadata ${metadata} \
     --node-data ${branch_lengths} \
                 ${nt_muts} \
-                ${nt_muts} \
+                ${aa_muts} \
     --colors ${colors} \
     --lat-longs ${lat_long} \
     --auspice-config ${config} \
@@ -260,7 +260,7 @@ process export_with_traits{
     --metadata ${metadata} \
     --node-data ${branch_lengths} \
                 ${nt_muts} \
-                ${nt_muts} \
+                ${aa_muts} \
                 ${traits} \
     --colors ${colors} \
     --lat-longs ${lat_long} \
