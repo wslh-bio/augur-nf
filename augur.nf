@@ -234,37 +234,36 @@ process export{
   """
 }
 
-process export_with_traits{
-  publishDir "${params.outdir}", mode:'copy'
+if (params.traits) {
+    process export_with_traits{
+        publishDir "${params.outdir}", mode:'copy'
 
-  input:
-  file(tree) from refined_tree_export_traits
-  file(metadata) from metadata_export_traits
-  file(branch_lengths) from branch_lengths_export_traits
-  file(nt_muts) from ancestral_nt_export_traits
-  file(aa_muts) from ancestral_aa_export_traits
-  file(traits) from traits_export
-  file(colors) from colors_export_traits
-  file(lat_long) from lat_long_export_traits
+        input:
+        file(tree) from refined_tree_export_traits
+        file(metadata) from metadata_export_traits
+        file(branch_lengths) from branch_lengths_export_traits
+        file(nt_muts) from ancestral_nt_export_traits
+        file(aa_muts) from ancestral_aa_export_traits
+        file(traits) from traits_export
+        file(colors) from colors_export_traits
+        file(lat_long) from lat_long_export_traits
 
-  output:
-  file "auspice.json"
-
-  when:
-  params.traits == "TRUE"
-
-  shell:
-  """
-  augur export v2 \
-    --tree ${tree} \
-    --metadata ${metadata} \
-    --node-data ${branch_lengths} \
-                ${nt_muts} \
-                ${aa_muts} \
-                ${traits} \
-    --colors ${colors} \
-    --lat-longs ${lat_long} \
-    --auspice-config ${config} \
-    --output auspice.json
-  """
+        output:
+        file "auspice.json"
+        
+        shell:
+        """
+        augur export v2 \
+        --tree ${tree} \
+        --metadata ${metadata} \
+        --node-data ${branch_lengths} \
+                    ${nt_muts} \
+                    ${aa_muts} \
+                    ${traits} \
+        --colors ${colors} \
+        --lat-longs ${lat_long} \
+        --auspice-config ${config} \
+        --output auspice.json
+        """
+    }
 }
