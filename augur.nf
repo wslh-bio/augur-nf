@@ -62,7 +62,8 @@ if (params.filter) {
         --exclude ${exclude} \
         --output filtered.fasta \
         --group-by country year month \
-        --min-date ${params.min_date}
+        --min-date ${params.min_date} \
+        --sequences-per-group 20
       """
     }
 }
@@ -247,6 +248,7 @@ if (params.traits) {
         file(traits) from traits_export
         file(colors) from colors_export_traits
         file(lat_long) from lat_long_export_traits
+        file(config) from config_export_traits
 
         output:
         file "auspice.json"
