@@ -25,5 +25,6 @@ optional arguments:
   --output  <output_path>  Path to ouput directory, default "augur_results".
   --filter  <path>         Filter out a list of sequences
   --min_date               Minimum date for sequences to include (use with --filter)
+  --seq_per_group          Number of sequences per group (use with --filter)
   --traits                 Perform ancestral reconstruction using country of origin as a trait    
 ```
