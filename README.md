@@ -18,7 +18,7 @@ required arguments:
   reference                Path to reference genome in Genbank format
   metadata                 Path to metadata file
   colors                   Path to tsv file containing hex color codes and country of origin
-  lat_long                 Path to tsv file containing lonfitude and latitude coordinates of countries of origin
+  lat_long                 Path to tsv file containing longitude and latitude coordinates of countries of origin
   config                   Path to Auspice config file
   
 optional arguments:
