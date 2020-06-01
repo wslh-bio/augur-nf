@@ -15,7 +15,7 @@ Channel
 Channel
     .fromPath( "${params.metadata}")
     .ifEmpty { exit 1, "Cannot find metadata file in: ${params.metadata}" }
-    .into { filter_metadata; refine_tree_metadata; traits_metadata; metadata_export; metadata_export_traits }
+    .into { filter_metadata; refine_tree_metadata; traits_metadata; metadata_export }
 
 Channel
     .fromPath( "${params.colors}")
@@ -205,7 +205,7 @@ process translate{
   file(ref) from reference_translate
 
   output:
-  file "aa_muts.json" into ancestral_aa_export, ancestral_aa_export_traits
+  file "aa_muts.json" into ancestral_aa_export
 
   shell:
   """
