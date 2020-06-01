@@ -11,7 +11,7 @@ The pipeline is designed to start from assembled genomes in fasta format. All as
 Start the pipeline using `nextflow augur.nf` and follow the options for running the pipeline.
 
 ```
-usage: nextflow augur.nf [--output] [--filter] [--min_date] [--traits]
+usage: nextflow augur.nf [--output] [--filter] [--traits] [--group_by] [--seq_per_group] [--traits] [--columns] [--<process_name>_addn]
              --sequences <path> --refernce <path> --metadata <path> --colors <path> 
              --lat_long <path> --config <path>
 
