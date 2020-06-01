@@ -26,7 +26,7 @@ required arguments:
 optional arguments:
   --output  <output_path>  Path to ouput directory, default "augur_results".
   --filter  <path_to_file> Filter out a list of sequences
-  --group_by               What metadata column to group sequences by (use with --filter)
+  --group_by               What metadata column to group sequences by, default "country year month" (use with --filter)
   --seq_per_group          Number of sequences per group (use with --filter and --seq_per_group)
   --traits                 Perform ancestral reconstruction of a trait
   --columns                What metadata column(s) to use for ancestral reconstruction (use with --trait)
