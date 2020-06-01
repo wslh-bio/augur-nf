@@ -3,6 +3,8 @@ This repository contains a Nextflow implementation of Nexstrain's Augur pipeline
 
 "Augur is the bioinformatics toolkit to track evolution from sequence and serological data. It provides a collection of commands which are designed to be composable into larger processing pipelines."
 
+The processes in this pipeline depend on a [Docker-ized version of Augur](https://github.com/StaPH-B/docker-builds/tree/master/augur/7.0.2).
+
 #### Using the pipeline
 The pipeline is designed to start from assembled genomes in fasta format. All assemblies must be in the same fasta file. Additionally, a reference genome in Genbank format, a tsv of metadata, a tsv containing a hex color code for each country of origin in your sample, a tsv containing latitude and longitude coordinates for each country of origin in your sample and an Auspice config file are required. Please see this [tutorial](https://nextstrain-augur.readthedocs.io/en/stable/tutorials/zika_tutorial.html) for more information on the file format requirements for each input.
 
