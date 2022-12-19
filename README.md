@@ -1,5 +1,5 @@
 # augur-nf
-This repository contains a Nextflow implementation of Nexstrain's Augur pipeline (https://github.com/nextstrain/augur). From Augur's github page: 
+This repository contains a Nextflow implementation of Nexstrain's Augur (https://github.com/nextstrain/augur). From Augur's github page: 
 
 "Augur is the bioinformatics toolkit to track evolution from sequence and serological data. It provides a collection of commands which are designed to be composable into larger processing pipelines."
 
